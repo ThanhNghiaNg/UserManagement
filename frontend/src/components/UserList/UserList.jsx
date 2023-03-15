@@ -1,18 +1,21 @@
 import classes from "./UserList.module.css";
 
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Space, Table } from "antd";
+import { Button, Input, Space, Table, Modal } from "antd";
 import { useRef, useState, useEffect } from "react";
 import Highlighter from "react-highlight-words";
 import useHttp from "../../hooks/useHttp";
 import { cvtStrToDate, serverURL } from "../../utils/global";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../../store/authSlice";
 
 function UserList(props) {
   const [data, setData] = useState([]);
   const { error, sendRequest } = useHttp();
+  const [reload, setReload] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [idDelete, setIdDelete] = useState("");
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const dispatch = useDispatch();
@@ -26,10 +29,12 @@ function UserList(props) {
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
   };
+
   const handleReset = (clearFilters) => {
     clearFilters();
     setSearchText("");
   };
+
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
       setSelectedKeys,
@@ -195,19 +200,29 @@ function UserList(props) {
       key: "action",
     },
   ];
+
   const onChange = (pagination, filters, sorter, extra) => {
     console.log("params", pagination, filters, sorter, extra);
   };
-
-  const onDeleteHandler = (event) => {
+  const onShowModalHandler = (event) => {
     const id =
       event.target.parentElement.parentElement.getAttribute("data-row-key");
+    setOpenModal(true);
+    setIdDelete(id);
+  };
+  const onHideModel = () => {
+    setOpenModal(false);
+  };
+  const onDeleteHandler = () => {
     sendRequest(
-      { url: `${serverURL}/v1/user/${id}`, method: "DELETE" },
+      { url: `${serverURL}/v1/user/${idDelete}`, method: "DELETE" },
       (data) => {
-        console.log(data);
-        if (!isAdmin) {
+        onHideModel();
+        if (idDelete === userId) {
           dispatch(authActions.logout());
+          navigate("/login");
+        } else {
+          setReload((prev) => !prev);
         }
       }
     );
@@ -242,7 +257,7 @@ function UserList(props) {
                 </button>
                 <button
                   className="btn btn-outline-danger ms-2"
-                  onClick={onDeleteHandler}
+                  onClick={onShowModalHandler}
                   disabled={isAdmin ? false : userId !== item._id}
                 >
                   Delete
@@ -253,14 +268,25 @@ function UserList(props) {
         })
       );
     });
-  }, []);
+  }, [reload]);
   return (
-    <Table
-      columns={columns}
-      dataSource={data}
-      pagination={{ pageSize: 10 }}
-      onChange={onChange}
-    />
+    <>
+      <Modal
+        open={openModal}
+        onOk={onDeleteHandler}
+        onCancel={onHideModel}
+        title={<p className="text-danger fw-bold fs-4">Delete User</p>}
+      >
+        <p className="">Are you sure to delete this User?</p>
+        <p className="">If you delete your own account, you will be logout!</p>
+      </Modal>
+      <Table
+        columns={columns}
+        dataSource={data}
+        pagination={{ pageSize: 10 }}
+        onChange={onChange}
+      />
+    </>
   );
 }
 
