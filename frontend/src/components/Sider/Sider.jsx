@@ -7,7 +7,7 @@ import React from "react";
 import { Layout } from "antd";
 import { useNavigate } from "react-router-dom";
 import { Menu } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../../store/authSlice";
 import useHttp from "../../hooks/useHttp";
 import { serverURL } from "../../utils/global";
@@ -17,6 +17,7 @@ function Sidebar(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { sendRequest } = useHttp();
+  const isAdmin = useSelector((state) => state.auth.isAdmin);
 
   const logoutHandler = async () => {
     sendRequest(
@@ -65,13 +66,9 @@ function Sidebar(props) {
         bottom: 0,
       }}
     >
-      <div
-        style={{
-          height: 32,
-          margin: 16,
-          background: "rgba(255, 255, 255, 0.2)",
-        }}
-      />
+      <div className="m-3 bg-secondary">
+        <p className="text-light text-center">{isAdmin ? "Admin" : "User"}</p>
+      </div>
       <Menu
         theme="dark"
         mode="inline"
