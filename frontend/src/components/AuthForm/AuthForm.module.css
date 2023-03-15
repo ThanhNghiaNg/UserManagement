@@ -1,0 +1,20 @@
+.wrap{
+    background-color: #343a40;
+    width: 100vw;
+    height: 100vh;
+}
+
+.center{
+    text-align: center;
+}
+
+.form{
+    position: absolute;
+    width: 25rem;
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 5rem 3rem;
+    border-radius: 12px;
+}
