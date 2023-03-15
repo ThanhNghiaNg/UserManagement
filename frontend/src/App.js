@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Home from './pages/Home'
 const App = () => {
   const isLoggedIn = !!useSelector((state) => state.auth.token);
   // const isLoggedIn = true;
@@ -21,7 +22,8 @@ const App = () => {
       {isLoggedIn && (
         <CustomeLayout>
           <Routes>
-            <Route path="/users" />
+          <Route path="/" element={<Home />} />
+            <Route path="/users" element={<Home />} />
           </Routes>
         </CustomeLayout>
       )}

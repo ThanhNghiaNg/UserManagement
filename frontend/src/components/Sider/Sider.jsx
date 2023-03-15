@@ -9,22 +9,35 @@ import { useNavigate } from "react-router-dom";
 import { Menu } from "antd";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../store/authSlice";
+import useHttp from "../../hooks/useHttp";
+import { serverURL } from "../../utils/global";
 const { Sider } = Layout;
 
 function Sidebar(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { sendRequest } = useHttp();
+
+  const logoutHandler = async () => {
+    sendRequest(
+      {
+        url: `${serverURL}/v1/auth/logout`,
+        method: "POST",
+      },
+      (data) => {
+        navigate("/login");
+        dispatch(authActions.logout());
+      }
+    );
+  };
+
   const listItems = [
     { icon: UserOutlined, label: "User List", href: "/users" },
-    { icon: UserAddOutlined, label: "Add User", href: "/users" },
+    { icon: UserAddOutlined, label: "Add User", href: "/add-users" },
     {
       icon: LogoutOutlined,
       label: "Logout",
-      action: () => {
-        navigate("/login");
-        dispatch(authActions.logout());
-        console.log("logout");
-      },
+      action: logoutHandler,
     },
   ];
   const items = listItems.map((item, idx) => {

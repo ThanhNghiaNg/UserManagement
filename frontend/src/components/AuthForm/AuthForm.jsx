@@ -29,7 +29,13 @@ const AuthForm = (props) => {
       (data) => {
         console.log(data);
         if (isLogin) {
-          dispatch(authActions.login(data._id));
+          dispatch(
+            authActions.login({
+              token: data.accessToken,
+              isAdmin: data.isAdmin,
+              id: data._id,
+            })
+          );
           navigate("/");
         } else {
           setSucess("Register successfully!");
@@ -110,12 +116,11 @@ const AuthForm = (props) => {
         <Form.Item className={classes.center}>
           {success && <p className="text-success">{success}</p>}
           {isLoading && (
-            <Space>
+            <Space className="mb-3">
               <Skeleton.Input active={true} size={"default"} />
             </Space>
           )}
-          {}
-          {error && <p className="text-danger">{error}</p>}
+          {error && <p className="text-danger mb-0">{error}</p>}
           <br />
           <Button
             type="primary"

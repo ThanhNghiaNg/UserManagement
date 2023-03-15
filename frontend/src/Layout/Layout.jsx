@@ -1,12 +1,11 @@
+import classes from './Layout.module.css'
 import React from "react";
-import { Layout, theme } from "antd";
 import Sidebar from "../components/Sider/Sider";
-const { Header, Content, Footer } = Layout;
+import { Layout, theme } from "antd";
+const { Footer } = Layout;
 
 function CustomeLayout(props) {
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
+  
   return (
     <Layout hasSider>
       <Sidebar />
@@ -16,13 +15,8 @@ function CustomeLayout(props) {
           marginLeft: 200,
         }}
       >
-        <Header
-          style={{
-            padding: 0,
-            background: colorBgContainer,
-          }}
-        />
-        {props.children}
+        
+        <div className={classes.wrapper}>{props.children}</div>
         <Footer
           style={{
             textAlign: "center",

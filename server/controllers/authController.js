@@ -8,6 +8,10 @@ const authController = {
   //REGISTER
   registerUser: async (req, res) => {
     try {
+      const userExist = await User.findOne({ username: req.body.username });
+      if (userExist) {
+        return res.status(403).json("Username already exist!");
+      }
       const salt = await bcrypt.genSalt(10);
       const hashed = await bcrypt.hash(req.body.password, salt);
       //Create new user
@@ -78,6 +82,7 @@ const authController = {
         return res.status(200).json({ ...others, accessToken, refreshToken });
       }
     } catch (err) {
+      console.log(err);
       return res.status(500).json(err);
     }
   },
