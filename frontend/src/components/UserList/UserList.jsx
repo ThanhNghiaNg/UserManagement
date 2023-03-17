@@ -158,7 +158,7 @@ function UserList(props) {
       ...getColumnSearchProps("email"),
     },
     {
-      title: "Is Admin",
+      title: "Admin",
       dataIndex: "isAdmin",
       key: "isAdmin",
       filters: [

@@ -4,7 +4,6 @@ const { verifyToken } = require("../controllers/verifyToken.js");
 
 //REGISTER
 router.post("/register", authController.registerUser);
-
 //REFRESH TOKEN
 router.post("/refresh", authController.requestRefreshToken);
 //LOG IN

@@ -17,9 +17,9 @@ function useHttp(props) {
             },
         method: requestConfig.method ? requestConfig.method : "GET",
         body: requestConfig.body ? JSON.stringify(requestConfig.body) : null,
-        credentials: "include",
       });
       const data = await respone.json();
+      console.log(data)
       if (respone.status >= 300) {
         setError(data);
       } else {

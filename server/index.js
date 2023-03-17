@@ -11,22 +11,13 @@ dotenv.config();
 mongoose.connect(process.env.MONGODB_URL, () => {
   console.log("CONNECTED TO MONGO DB");
 });
-app.use(
-  cors({
-    origin: true,
-    credentials: true,
-  })
-);
+app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 
 //ROUTES
 app.use("/v1/auth", authRoute);
 app.use("/v1/user", userRoute);
-
-app.get("/test", (req, res, next) => {
-  res.status(200).json({ success: "Hello Server" });
-});
 
 app.listen(process.env.PORT, () => {
   console.log("Server is running");

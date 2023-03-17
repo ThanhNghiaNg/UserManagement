@@ -8,12 +8,9 @@ const authController = {
   //REGISTER
   registerUser: async (req, res) => {
     try {
-      const userExist = await User.findOne({ username: req.body.username });
-      if (userExist) {
-        return res.status(403).json("Username already exist!");
-      }
       const salt = await bcrypt.genSalt(10);
       const hashed = await bcrypt.hash(req.body.password, salt);
+
       //Create new user
       const newUser = await new User({
         username: req.body.username,
@@ -64,8 +61,7 @@ const authController = {
       );
       if (!validPassword) {
         return res.status(404).json("Incorrect password");
-      }
-      if (user && validPassword) {
+      } else if (user && validPassword) {
         //Generate access token
         const accessToken = authController.generateAccessToken(user);
         //Generate refresh token
@@ -79,11 +75,11 @@ const authController = {
           sameSite: "strict",
         });
         const { password, ...others } = user._doc;
-        return res.status(200).json({ ...others, accessToken, refreshToken });
+        res.status(200).json({ ...others, accessToken, refreshToken });
       }
     } catch (err) {
-      console.log(err);
-      return res.status(500).json(err);
+      console.log(req.body);
+      res.status(500).json(err);
     }
   },
 
